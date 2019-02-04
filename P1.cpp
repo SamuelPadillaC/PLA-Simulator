@@ -105,6 +105,11 @@ int main (int argc, char *argv[])
     Dis.push_back(Raw[i]);
   }
   
-
+string buff;
 //CREATING THE LOGIC
+while (getline(cin, buff)
+{
+cout << "Please insert " << In << " inputs on binary form (1 and 0)" << endl;
+}
+
 }
