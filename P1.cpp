@@ -1,4 +1,4 @@
-  #include <iostream>
+#include <iostream>
   #include <string>
   #include <fstream>
   #include <sstream>
@@ -15,12 +15,14 @@
   using std::ofstream;
   using std::ios;
   using std::vector;
+  using std::istringstream;
 
+//FUNCTION PROTOTYPES  
+bool Compare(string Clause); 
+///////////////////////
 
-// FUNCTION PROTOTYPES 
-bool Compare(string Clause);
-////////////////////////////
-
+vector <bool> answers;
+vector <bool> userinp;
 int main (int argc, char *argv[])
 {
 //USAGE GUARD
@@ -42,9 +44,9 @@ int main (int argc, char *argv[])
 
   istringstream iss;
 
-  vector <int> Raw; //Raw data from config file
+  vector <string> Raw; //Raw data from config file
   vector <string> Con; //Conjunctive Clauses
-  vector <int> Dis; //Disjunctive Clauses
+  vector <string> Dis; //Disjunctive Clauses
 
   int In,
   Out,
@@ -79,21 +81,21 @@ int main (int argc, char *argv[])
   string firstline = Raw[0] + '\n';
   iss.str(firstline); //Open first line to iss to manipulate it
   getline(iss, intbuf, ',');
-  In = strtol(intbuf.c_str(), &ep, 10)); //Read Inputs
+  In = strtol(intbuf.c_str(), &ep, 10); //Read Inputs
       if (*ep != '\0')
       {
         cout << "The configurtion file does not have the proper format" << endl;
         exit(0);
       }
   getline(iss, intbuf, ',');
-  Out = strtol(intbuf.c_str(), &ep, 10)); //Read Outputs
+  Out = strtol(intbuf.c_str(), &ep, 10); //Read Outputs
       if (*ep != '\0')
       {
         cout << "The configurtion file does not have the proper format" << endl;
         exit(0);
       }
   getline(iss, intbuf);
-  Clauses = strtol(intbuf.c_str(), &ep, 10)); //Read number of clauses
+  Clauses = strtol(intbuf.c_str(), &ep, 10); //Read number of clauses
       if (*ep != '\0')
       {
         cout << "The configurtion file does not have the proper format" << endl;
@@ -112,21 +114,54 @@ int main (int argc, char *argv[])
   
 string buff;
 //CREATING THE LOGIC
-while (getline(cin, buff)
-{
-cout << "Please insert " << In << " inputs on binary form (1 and 0)" << endl;
 
-for (int i = 0; i < Con.size(); i++)
-  {
-    answers.push_back(Compare(Con[i]));
-  }
+cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to quit" << endl;
+	while (getline(cin, buff))
+	{
+	
+		if (buff.length() != In)
+		{
+			cout << "The number of inputs is: " << In << " so you can only enter that number of inputs." << endl;
+			break;
+		}
+		
+		for (int i = 0; i < buff.length(); i++)
+		{
+			if ((buff[i] != '0') && (buff[i] != '1'))
+			{
+				cout << "It is on the binary form, which means '1' and '0' are the only valid digits" << endl;
+				break;
+			}
+		
+			for (int i = 0; i < buff.length(); i++)
+			{
+			if (buff[i] == '0')
+			{
+				userinp.push_back(0);
+			}
+			else if (buff[i] == '1')
+			{ 
+				userinp.push_back(1);
+			}
+			}
+			
+  		}
+  			for (int i = 0; i < Con.size(); i++)
+  			{
+    		answers.push_back(Compare(Con[i]));
+  			}
+			for (int i = 0; i < answers.size(); i++)
+  			{
+  		 	cout << answers[i];
+  			}
+  			cout << endl;
+  	cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to quit" << endl;
+
+	}
+	
 
 }
 
-}
-
-///////////////////////////
-// FUNCTION DEFINITIONS //
 bool Compare (string Clause)
 {
   int index;
