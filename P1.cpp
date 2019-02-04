@@ -16,6 +16,11 @@
   using std::ios;
   using std::vector;
 
+
+// FUNCTION PROTOTYPES 
+bool Compare(string Clause);
+////////////////////////////
+
 int main (int argc, char *argv[])
 {
 //USAGE GUARD
@@ -110,6 +115,42 @@ string buff;
 while (getline(cin, buff)
 {
 cout << "Please insert " << In << " inputs on binary form (1 and 0)" << endl;
+
+for (int i = 0; i < Con.size(); i++)
+  {
+    answers.push_back(Compare(Con[i]));
+  }
+
 }
 
+}
+
+///////////////////////////
+// FUNCTION DEFINITIONS //
+bool Compare (string Clause)
+{
+  int index;
+  for (int i = 0; i < Clause.length(); i++)
+  {
+    //Char is false - 0
+    if (islower(Clause[i]))
+    {
+      index = Clause[i] - 'a'; //What index the letter refers to
+      if (userinp[index] == 1) //If index is wrong return false
+      {
+        return 0;
+      }
+    }
+    //Char is true - 1
+    else if (isupper(Clause[i]))
+    {
+      index = Clause[i] - 'A'; //What index the letter refers to
+    }
+    if (userinp[index] == 0) //If index is wrong return false
+      {
+        return 0;
+      }
+  }
+    //If through for loop without returning, all inputs are correct, return true
+    return 1;
 }
