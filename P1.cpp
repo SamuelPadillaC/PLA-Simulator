@@ -56,7 +56,7 @@ int main (int argc, char *argv[])
 
 
 // READING CONFIG FILE
-  ifl.opem(argv[1]);
+  ifl.open(argv[1]);
   //Guard
     if (!ifl)
     {
