@@ -112,55 +112,58 @@ int main (int argc, char *argv[])
     Dis.push_back(Raw[i]);
   }
   
-string buff;
 //CREATING THE LOGIC
-
+string buff;
+//Prompt for Input
 cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to quit" << endl;
 	while (getline(cin, buff))
 	{
-	
+    //Clear vecotrs to start
+    userinp.clear();
+    answers.clear();
+
+    //Input guard
 		if (buff.length() != In)
 		{
-			cout << "The number of inputs is: " << In << " so you can only enter that number of inputs." << endl;
-			break;
+			cout << "The number of inputs is " << In << " so you can only enter that number of inputs.\n" << endl;
 		}
-		
-		for (int i = 0; i < buff.length(); i++)
-		{
-			if ((buff[i] != '0') && (buff[i] != '1'))
-			{
-				cout << "It is on the binary form, which means '1' and '0' are the only valid digits" << endl;
-				break;
-			}
-		
-			for (int i = 0; i < buff.length(); i++)
-			{
-			if (buff[i] == '0')
-			{
-				userinp.push_back(0);
-			}
-			else if (buff[i] == '1')
-			{ 
-				userinp.push_back(1);
-			}
-			}
-			
-  		}
-  			for (int i = 0; i < Con.size(); i++)
-  			{
-    		answers.push_back(Compare(Con[i]));
-  			}
-			for (int i = 0; i < answers.size(); i++)
-  			{
-  		 	cout << answers[i];
-  			}
-  			cout << endl;
-  	cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to quit" << endl;
+		else
+    {
+    /// CONJUNCTIVE CLAUSES ///
+      // Check string and fill userinp vector
+      for (int i = 0; i < buff.length(); i++)
+      {
+        if ((buff[i] != '0') && (buff[i] != '1'))
+        {
+          cout << "Please enter input in binary form ('1' or '0')" << endl;
+          exit(0);
+        }	
+        if (buff[i] == '0')
+        {
+          userinp.push_back(0);
+        }
+        else if (buff[i] == '1')
+        { 
+          userinp.push_back(1);
+        }
+      }
 
+      //Call Compare function and fill answers
+      for (int i = 0; i < Con.size(); i++)
+      {
+        answers.push_back(Compare(Con[i]));
+      }
+      
+    /// DISJUNCTIVE CLAUSES ///
+    
+    }
+  	//Prompt for more input
+    cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to quit" << endl;
 	}
-	
-
 }
+
+//////////////////////////////////////
+//////// FUNCTION DEFINITIONS ///////
 
 bool Compare (string Clause)
 {
@@ -180,11 +183,11 @@ bool Compare (string Clause)
     else if (isupper(Clause[i]))
     {
       index = Clause[i] - 'A'; //What index the letter refers to
-    }
     if (userinp[index] == 0) //If index is wrong return false
       {
         return 0;
       }
+    }
   }
     //If through for loop without returning, all inputs are correct, return true
     return 1;
