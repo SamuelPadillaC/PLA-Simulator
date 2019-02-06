@@ -1,5 +1,5 @@
 # PLA-Simulator
-This is a digital simulator for a Progamable Logic Array.
+This is a digital simulator for a Progammable Logic Array.
 
 This program runs on the terminal and works by reading a configuration file and writing out the output to a text file (if given).
 ConfigTest.txt is an example of a configuration file.
