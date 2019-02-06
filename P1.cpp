@@ -1,3 +1,10 @@
+/*******************************************
+Created by SamuelitoPerro and Jorgito Loredo
+
+This program simulates a PLA (Programmable
+Logic Array) by reading a configuration file.
+********************************************/
+
 #include <iostream>
   #include <string>
   #include <fstream>
@@ -6,6 +13,8 @@
   #include <cstdlib>
   #include <vector>
   #include <cctype>
+  #include <ctime>
+  #include <chrono>
 
   using std::cin;
   using std::cout;
@@ -14,15 +23,18 @@
   using std::ifstream;
   using std::ofstream;
   using std::ios;
+  using std::chrono::system_clock;
   using std::vector;
   using std::istringstream;
 
 //FUNCTION PROTOTYPES  
 bool Compare(string Clause); 
 ///////////////////////
-
+//GLOBAL VECTORS
 vector <bool> answers;
 vector <bool> userinp;
+
+
 int main (int argc, char *argv[])
 {
 //USAGE GUARD
@@ -38,15 +50,21 @@ int main (int argc, char *argv[])
   bool logfile;
 
   string sbuf,
+  disbuf,
   intbuf;
   
   ifstream ifl;
 
-  istringstream iss;
+  ofstream ofl;
+
+  istringstream iss,
+  iss2;
 
   vector <string> Raw; //Raw data from config file
   vector <string> Con; //Conjunctive Clauses
   vector <string> Dis; //Disjunctive Clauses
+  vector <int> intDis; // Int vector holding single Dis clauses
+  vector <bool> Output; 
 
   int In,
   Out,
@@ -59,7 +77,17 @@ int main (int argc, char *argv[])
   if (argc == 2)
     logfile = false;
   else
+  {
     logfile = true;
+    ofl.open(argv[2], ios::app);
+    cout << "*Writing out to log file named: \'" << argv[2] << "\'\n" << endl;
+    // Define time
+    time_t rawTime = system_clock::to_time_t(system_clock::now());
+    struct tm *pTime = std::localtime(&rawTime);
+    //Output log time
+    ofl << "--------------------" << endl;
+    ofl << "Log made on: " << std::put_time(pTime, "%A %D %R") << endl;
+  }
 
 
 // READING CONFIG FILE
@@ -103,11 +131,11 @@ int main (int argc, char *argv[])
       }
 
   //Fill in Con and Dis Vectors
-  for (int i = 1; i < Clauses + 1; i++)
+  for (int i = 1; i < Clauses + 1; i++) //From second line to clauses
   {
     Con.push_back(Raw[i]);
   }
-  for (int i = Clauses + 1; i < Raw.size(); i++)
+  for (int i = Clauses + 1; i < Raw.size(); i++) // From clauses to end
   {
     Dis.push_back(Raw[i]);
   }
@@ -121,12 +149,14 @@ cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to
     //Clear vecotrs to start
     userinp.clear();
     answers.clear();
+    Output.clear();
 
     //Input guard
 		if (buff.length() != In)
 		{
-			cout << "The number of inputs is " << In << " so you can only enter that number of inputs.\n" << endl;
+			cout << "The number of inputs is " << In << ", please only enter that number of inputs.\n" << endl;
 		}
+
 		else
     {
     /// CONJUNCTIVE CLAUSES ///
@@ -155,16 +185,76 @@ cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to
       }
       
     /// DISJUNCTIVE CLAUSES ///
-    
+      for (int i = 0; i < Dis.size(); i++)
+      {
+        Dis[i] += ',';
+        iss2.str(Dis[i]); //Open clause string to manipulate it
+        while (getline(iss2, disbuf, ',')) //Read until there are no more commas
+        {
+          intDis.push_back(strtol(disbuf.c_str(), &ep, 10)); //Push num as int
+        }
+        
+        // Compare each disjunctive clause to answers //
+        int counter = 0;
+        for (int z = 0; z < intDis.size(); z++)
+        {
+          if (answers[intDis[z]] == 1) //If one is true, the disjunctive clause is true
+          {
+            Output.push_back(1);
+            break;
+          }
+          else
+            counter++;
+        }
+        if (counter == intDis.size()) //This means all were false. So clause is false
+            Output.push_back(0);
+
+        intDis.clear(); //Clear vector
+        iss2.str(""); //Clear string buffer
+        iss2.clear(); //Clear error state
+      }
+
+    /// OUTPUT ///
+      cout << "\nResult of the conjunctive clauses: " << endl;
+      for (int i = 0; i < answers.size(); i++)
+      {
+        cout << answers[i]; 
+      }
+      cout << endl;
+      cout << "\nFinal Output: " << endl;
+      for (int i = 0; i < Output.size(); i++)
+      {
+        cout << Output[i]; 
+      }
+      cout << endl;
+      cout << endl;
+      
+      // Write to log file if exists //
+      if (logfile == 1)
+      {
+        ofl << "-----" << endl;
+        ofl << "Input: ";
+        for (int i = 0; i < userinp.size(); i++)
+        {
+          ofl << userinp[i]; 
+        }
+        ofl << "\nOutput: ";
+        for (int i = 0; i < Output.size(); i++)
+        {
+          ofl << Output[i]; 
+        }
+        ofl << endl;
+      }
     }
   	//Prompt for more input
     cout << "Please insert " << In << " inputs on binary form (1 and 0) or ctrl-D to quit" << endl;
 	}
 }
-
 //////////////////////////////////////
-//////// FUNCTION DEFINITIONS ///////
 
+
+
+//////// FUNCTION DEFINITIONS ///////
 bool Compare (string Clause)
 {
   int index;
