@@ -5,7 +5,7 @@ This program runs on the terminal and works by reading a configuration file and 
 ConfigTest.txt is an example of a configuration file.
 
 
-# The instructions for the configuration file format go as follow: #
+# The configuration file has the following format: #
 - The first line has three numbers separated by comas.
 - Each of the first two numbers is in the range 1-10. The lastnumber is in the range 1-100.
 - The first number is the number of inputs and the second number is the number ofoutputs.
